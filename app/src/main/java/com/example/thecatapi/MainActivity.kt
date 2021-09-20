@@ -28,13 +28,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter: CatsAdapter? = null
+       // val adapter: CatsAdapter? = null
 
         mApiService = RestClient.client.create(APIService::class.java)
-        val rv: RecyclerView = findViewById(R.id.rv_cat)
-        val layoutManager = LinearLayoutManager(this)
+
         mAdapter = CatsAdapter(this, cats)
-        rv.adapter = adapter
+        val rv: RecyclerView = findViewById(R.id.rv_cat)
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = mAdapter
 
         fetchCatList()
       }
