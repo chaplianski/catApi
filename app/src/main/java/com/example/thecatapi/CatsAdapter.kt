@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.thecatapi.CatsAdapter.*
@@ -26,6 +27,7 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
 
     class ViewHolder (itemView: View, listener: onClickCatListener): RecyclerView.ViewHolder(itemView){
         var catImage: ImageView = itemView.findViewById<ImageView>(R.id.im_item_cat_image)
+        var catId: TextView = itemView.findViewById<TextView>(R.id.id_item)
         init {
             itemView.setOnClickListener {
                 listener.onItemClick(adapterPosition)
@@ -40,7 +42,7 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cat: Cat = cats[position]
-
+        holder.catId.text = cat.id
         Glide.with(catContext).load(cat.imageUrl)
             .error(R.drawable.ic_cat_silhouette_2)
             .centerCrop()

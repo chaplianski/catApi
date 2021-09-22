@@ -3,6 +3,7 @@ package com.example.thecatapi
 import android.app.LauncherActivity
 import android.content.Intent
 import android.graphics.Movie
+import android.net.Network
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.internal.notifyAll
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.create
@@ -41,15 +43,28 @@ class MainActivity : AppCompatActivity() {
       }
 
     private fun fetchCatList() {
-        val call = mApiService!!.fetchCats("android")
-        call.enqueue(object: retrofit2.Callback <ListCats> {
-            override fun onResponse (call: Call <ListCats>, response: Response<ListCats>){
+
+
+
+
+        val call = mApiService?.fetchCats()
+
+        call?.enqueue(object: retrofit2.Callback <List<Cat>> {
+
+            val loggingInterceptor = HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+
+
+            override fun onResponse (call: Call <List<Cat>>, response: Response<List<Cat>>){
                 val catResponse = response.body()
+                Log.d("MyLog", "${response.body()}")
                 if (catResponse == null){
                     mAdapter!!.notifyDataSetChanged()
                 }
             }
-            override fun onFailure (call : Call<ListCats>, t: Throwable){
+            override fun onFailure (call : Call<List<Cat>>, t: Throwable){
+
                 Log.d("MyLog", "Error: ${t.localizedMessage}")
             }
         })
