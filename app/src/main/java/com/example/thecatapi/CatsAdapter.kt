@@ -42,8 +42,8 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cat: Cat = cats[position]
-        holder.catId.text = cat.id
-        Glide.with(catContext).load(cat.imageUrl)
+        holder.catId.text = "222" //cat.id
+        Glide.with(catContext).load(cat.url)
             .error(R.drawable.ic_cat_silhouette_2)
             .centerCrop()
             .override(250, 250)

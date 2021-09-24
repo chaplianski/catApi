@@ -11,6 +11,7 @@ import android.view.View
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import okhttp3.Interceptor
 import okhttp3.internal.notifyAll
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -44,21 +45,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchCatList() {
 
-
-
-
         val call = mApiService?.fetchCats()
 
         call?.enqueue(object: retrofit2.Callback <List<Cat>> {
 
-            val loggingInterceptor = HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
-
-
-
-            override fun onResponse (call: Call <List<Cat>>, response: Response<List<Cat>>){
+           override fun onResponse (call: Call <List<Cat>>, response: Response <List<Cat>>){
                 val catResponse = response.body()
-                Log.d("MyLog", "${response.body()}")
+                Log.d("MyLog", "${response.body().toString()}")
+
                 if (catResponse == null){
                     mAdapter!!.notifyDataSetChanged()
                 }
@@ -71,6 +65,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+}
 
   /*  private fun getCats() {
 
@@ -83,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             rv.adapter = adapter
             }
         }*/
-    }
+ //   }
 
 
 
