@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.thecatapi.CatsAdapter.*
+import com.example.thecatapi.model.Cat
 
 class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
     RecyclerView.Adapter <ViewHolder>() {
@@ -26,8 +26,8 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
     }
 
     class ViewHolder (itemView: View, listener: onClickCatListener): RecyclerView.ViewHolder(itemView){
-        var catImage: ImageView = itemView.findViewById<ImageView>(R.id.im_item_cat_image)
-        var catId: TextView = itemView.findViewById<TextView>(R.id.id_item)
+        var catImage: ImageView = itemView.findViewById(R.id.im_item_cat_image)
+    //    var catId: TextView = itemView.findViewById<TextView>(R.id.id_item)
         init {
             itemView.setOnClickListener {
                 listener.onItemClick(adapterPosition)
@@ -42,12 +42,13 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cat: Cat = cats[position]
-        holder.catId.text = "222" //cat.id
+     //   holder.catId.text = cat.id
+
         Glide.with(catContext).load(cat.url)
-            .error(R.drawable.ic_cat_silhouette_2)
+            .error(R.drawable.ic_baseline_block_24)
             .centerCrop()
-            .override(250, 250)
-            .placeholder(R.drawable.ic_cat_silhouette_2)
+            .override(485, 420)
+ //           .placeholder(R.drawable.ic_baseline_blur_circular_24)
             .into(holder.catImage)
 
     }
