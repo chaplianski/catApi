@@ -45,7 +45,7 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
      //   holder.catId.text = cat.id
 
         Glide.with(catContext).load(cat.url)
-            .error(R.drawable.ic_baseline_block_24)
+ //           .error(R.drawable.ic_baseline_block_24)
             .centerCrop()
             .override(485, 420)
  //           .placeholder(R.drawable.ic_baseline_blur_circular_24)

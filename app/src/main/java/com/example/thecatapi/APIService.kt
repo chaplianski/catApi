@@ -6,6 +6,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -15,7 +16,7 @@ import retrofit2.http.*
 interface APIService {
 
   @GET ("images/search?limit=100&page=8&order=Desc")
-  @Headers("x-api-key:9ff40de4-c5fc-4524-8783-35ca94d9b13c")
+//  @Headers("x-api-key:9ff40de4-c5fc-4524-8783-35ca94d9b13c")
 /*  suspend fun everything (
       @Query("q") query: String? = null,
       @Query ("page") @IntRange (from = 1) page: Int,
@@ -25,7 +26,7 @@ interface APIService {
   ): Response<Cat>
 */
 
-  fun fetchCats(@Query("page") pageNumber: Int):  Response<Cats>
+  fun fetchCats(@Query("page") pageNumber: Int): Call<List<Cat>>
 
     companion object {
 
@@ -48,6 +49,7 @@ interface APIService {
                 .baseUrl(BASE_URL)
                 .client(okkHttpclient)
                 .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+
                 .build()
                 .create(APIService::class.java)
 

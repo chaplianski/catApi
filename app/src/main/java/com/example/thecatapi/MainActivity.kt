@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.thecatapi.adapter.PagingCatAdapter
 import com.example.thecatapi.viewmodel.MainViewModel
 import com.example.thecatapi.viewmodel.MainViewModelFactory
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 
@@ -68,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         val rv: RecyclerView = findViewById(R.id.rv_cat)
         rv.apply {
             layoutManager = GridLayoutManager(context, 2)
- //           setHasFixedSize(true)
+            setHasFixedSize(true)
             adapter = mainListAdapter
         }
     }
