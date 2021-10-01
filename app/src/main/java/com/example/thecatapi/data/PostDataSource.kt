@@ -6,10 +6,10 @@ import androidx.paging.PagingState
 import com.example.thecatapi.APIService
 import com.example.thecatapi.CatsAdapter
 import com.example.thecatapi.model.Cat
+import retrofit2.Call
 import retrofit2.Response
 
-import retrofit2.Call as Call
-    lateinit var call: Call<List<Cat>>
+lateinit var call: Call<List<Cat>>
 class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat>() {
   //  var call = apiService.fetchCats(1)
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Cat> {
@@ -43,11 +43,12 @@ class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat
     }
 
     private fun fetchCatList(): List<Cat> {
-        var mApiService: APIService? = null
+      //  var mApiService: APIService? = null
         val mAdapter: CatsAdapter? = null
        //call = mApiService?.fetchCats()
     //    var call = mApiService?.fetchCats(1)
-            var allCats: List<Cat> = ArrayList()
+            var allCats: MutableList<Cat> = ArrayList()
+
 
         call?.enqueue(object: retrofit2.Callback <List<Cat>> {
 
@@ -62,7 +63,8 @@ class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat
                     allCats.addAll(catResponse)
                     Log.d("MyLog", "${allCats}")
                     mAdapter!!.notifyDataSetChanged()
-
+     //               val participantJsonList: List<Skill> =
+    //                    mapper.readValue(jsonString, object : TypeReference<List<Cat?>?>() {})
                 }
             }
             override fun onFailure (call : Call<List<Cat>>, t: Throwable){
