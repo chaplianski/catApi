@@ -4,33 +4,54 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.thecatapi.APIService
-import com.example.thecatapi.CatsAdapter
 import com.example.thecatapi.model.Cat
-import retrofit2.Call
-import retrofit2.Response
+import com.example.thecatapi.model.toCat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
-lateinit var call: Call<List<Cat>>
-class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat>() {
-  //  var call = apiService.fetchCats(1)
+
+
+class PostDataSource(private val apiService: APIService, private val query: String) : PagingSource<Int, Cat>() {
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Cat> {
-        try {
+      if (query.isBlank()) {
+          return LoadResult.Page(emptyList(), prevKey = null, nextKey = null)
+      }
+         try {
+            val pageNumber = params.key ?: INITIAL_PAGE_NUMBER
+            val pageSize = params.loadSize.coerceAtMost(APIService.MAX_PAGE_SIZE)
+
             val currentLoadingPageKey = params.key ?: 1
- //           val response = apiService.fetchCats(currentLoadingPageKey)
-            call = apiService.fetchCats(currentLoadingPageKey)
-            val responseCats = mutableListOf<Cat>()
-            val cats = fetchCatList()
+            val call = apiService.fetchCats(query, pageNumber, pageSize)
+            if (call.isSuccessful){
+                val allcats = call.body()!!.map { it.toCat() }
+                Log.d("MyLog", "Successfull List:${allcats}")
+                val nextPageNumber = if (allcats.isEmpty()) null else pageNumber + 1
+                val prevPageNumber = if (pageNumber > 1) pageNumber - 1 else null
 
- //           val cats = call.body()
-                //?.cats//?: emptyList()
-            responseCats.addAll(cats)
+          //      val nextPageNumber = if (allcats?.isEmpty() == true) null else currentLoadingPageKey + 1
+         //       val prevPageNumber = if (currentLoadingPageKey > 1) currentLoadingPageKey - 1 else null
+                return LoadResult.Page(allcats, prevPageNumber, nextPageNumber)
 
-            val prevKey = if (currentLoadingPageKey == 1) null else currentLoadingPageKey - 1
+            }else {
+                return LoadResult.Error(HttpException(call))
+            }
 
-            return LoadResult.Page(
-                data = responseCats,
-                prevKey = prevKey,
-                nextKey = currentLoadingPageKey.plus(1)
-            )
+  //          val responceCats = allcats?.url.toString()
+  //          val listUrlCat = mutableListOf<String>()
+  //          listUrlCat.add(responceCats)
+  //         val responseCats = mutableListOf<Cat>()
+//            val cattt =
+
+ //           responseCats.addAll(allcats)
+
+  //          val prevKey = if (currentLoadingPageKey == 1) null else currentLoadingPageKey - 1
+
+
+
+
         } catch (e: Exception) {
             return LoadResult.Error(e)
         }
@@ -41,7 +62,7 @@ class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat
         val anchorPage = state.closestPageToPosition(anchorPosition) ?: return null
         return anchorPage.prevKey?.plus(1) ?: anchorPage.nextKey?.minus(1)
     }
-
+/*
     private fun fetchCatList(): List<Cat> {
       //  var mApiService: APIService? = null
         val mAdapter: CatsAdapter? = null
@@ -49,8 +70,8 @@ class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat
     //    var call = mApiService?.fetchCats(1)
             var allCats: MutableList<Cat> = ArrayList()
 
-
-        call?.enqueue(object: retrofit2.Callback <List<Cat>> {
+        CoroutineScope(Dispatchers.IO).launch {
+         call?.enqueue(object: retrofit2.Callback <List<Cat>> {
 
             override fun onResponse (call: Call<List<Cat>>, response: Response<List<Cat>>) {
                 val catResponse = response.body()
@@ -71,8 +92,16 @@ class PostDataSource(private val apiService: APIService) : PagingSource<Int, Cat
 
                 Log.d("MyLog", "Error: ${t.localizedMessage}")
             }
+
         })
+         //   return@launch allCats as Unit
+        }
         return allCats
+    }*/
+
+    companion object {
+
+        const val INITIAL_PAGE_NUMBER = 1
     }
 
 }

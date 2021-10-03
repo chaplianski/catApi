@@ -11,6 +11,7 @@ import com.example.thecatapi.viewmodel.MainViewModel
 import com.example.thecatapi.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,12 +64,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupList() {
+        val viewModel = MainViewModel(APIService.getApiService())
         mainListAdapter = PagingCatAdapter()
         val rv: RecyclerView = findViewById(R.id.rv_cat)
         rv.apply {
             layoutManager = GridLayoutManager(context, 2)
             setHasFixedSize(true)
             adapter = mainListAdapter
+
+            lifecycleScope.launch {
+                viewModel.flow.collectLatest { pagingData ->
+                    mainListAdapter.submitData(pagingData)
+                }
+            }
         }
     }
 

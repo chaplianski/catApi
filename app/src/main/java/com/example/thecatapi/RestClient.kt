@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 
 
 object RestClient {
@@ -16,40 +17,30 @@ object RestClient {
 
     private var mRetrofit: Retrofit? = null
 
-
-    //   var gson = GsonBuilder()
-//        .setLenient()
-//       .create()
     var moshi = Moshi.Builder()
         .addLast(KotlinJsonAdapterFactory())
         .build()
-
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-
-
     val okkHttpclient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
-        .addNetworkInterceptor(loggingInterceptor)
-
+        .addNetworkInterceptor(loggingInterceptor
+        .setLevel(HttpLoggingInterceptor.Level.HEADERS)
+        .setLevel(HttpLoggingInterceptor.Level.BODY))
         .build()
 
+        private fun getCatApiClient():APIService {
+            val client = Retrofit.Builder()
+                .client(okkHttpclient)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+                .build()
+            return client.create(APIService::class.java)
+        }
 
-        val client: Retrofit
-            get() {
-                if (mRetrofit == null) {
-                    mRetrofit = Retrofit.Builder()
-                        .client(okkHttpclient)
-                        .baseUrl(BASE_URL)
 
-                        .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
-                        .build()
-
-                }
-                return this.mRetrofit!!
-            }
     }
 

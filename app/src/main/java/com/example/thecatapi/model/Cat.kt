@@ -7,6 +7,7 @@ import com.squareup.moshi.JsonClass
 //data class Cat(
 //	val cat: List<CatItem?>? = null
 //)
+/*
 @JsonClass(generateAdapter = true)
 data class Cat(
 
@@ -15,8 +16,5 @@ data class Cat(
 
 )
 
-
-data class Cats(
-	val cats: List<Cat>
-)
+*/
 
