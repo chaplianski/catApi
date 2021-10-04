@@ -1,12 +1,15 @@
 package com.example.thecatapi
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thecatapi.adapter.PagingCatAdapter
+import com.example.thecatapi.model.Cat
 import com.example.thecatapi.viewmodel.MainViewModel
 import com.example.thecatapi.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var viewModel: MainViewModel
     lateinit var mainListAdapter: PagingCatAdapter
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        PagingCatAdapter()
+        PagingCatAdapter(){null}
     }
 
 
@@ -50,22 +53,36 @@ class MainActivity : AppCompatActivity() {
         setupView()
 
 
+     /*   fun catClickItems(adapter: CatsAdapter) {
+            adapter.setOnClickDogListener(object : CatsAdapter.onClickCatListener{
+                override fun onItemClick(position: Int) {
+                    val i = Intent (this, CatImageActivity::class.java)
+                    i.putExtra("position", catsClickedList[position].id)
+
+                    startActivity(i)
+                }
+            })
+
+
+        }*/
+
     }
 
 
     private fun setupView() {
         lifecycleScope.launch {
             viewModel.flow.collect (adapter::submitData)
-       //     {
 
-   //           PagingCatAdapter.submitData(it)
-  //          }
         }
     }
 
     private fun setupList() {
         val viewModel = MainViewModel(APIService.getApiService())
         mainListAdapter = PagingCatAdapter()
+        {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
         val rv: RecyclerView = findViewById(R.id.rv_cat)
         rv.apply {
             layoutManager = GridLayoutManager(context, 2)
@@ -87,6 +104,7 @@ class MainActivity : AppCompatActivity() {
                 MainViewModelFactory(APIService.getApiService())
             )[MainViewModel::class.java]
     }
+
 
 /*
 
@@ -136,20 +154,9 @@ class MainActivity : AppCompatActivity() {
         }*/
  //   }
 
+*/
 
 
-    private fun catClickItems(catsClickedList: List<Cat>, adapter: CatsAdapter) {
-        adapter.setOnClickDogListener(object : CatsAdapter.onClickCatListener{
-            override fun onItemClick(position: Int) {
-           //     val i = Intent(this, CatImageActivity::class.java)
-           //     i.putExtra("position", catsClickedList[position].id)
-
-            //    startActivity(i)
-            }
-        })
-
-
-    }*/
 
 
 }

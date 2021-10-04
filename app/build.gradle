@@ -95,6 +95,7 @@ dependencies {
     implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0'
     implementation "org.jetbrains.anko:anko-design:0.10.5"
     implementation("androidx.paging:paging-runtime:3.0.1")
+    implementation 'com.wajahatkarim3.EasyFlipView:EasyFlipView:3.0.0'
   //  compile 'com.github.tosslife:pullloadview:1.1.0'
 
 
