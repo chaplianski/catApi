@@ -1,9 +1,8 @@
 package com.example.thecatapi
 
-import android.animation.ValueAnimator
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -16,60 +15,48 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-
 class MainActivity : AppCompatActivity() {
 
-  //  private var mApiService: APIService? = null
-  //  private var mAdapter: CatsAdapter? = null
-//    private var cats: MutableList<Cat> = ArrayList()
-
- //   var catsList = mutableListOf<Cat>()
-
-    lateinit var viewModel: MainViewModel
-    lateinit var mainListAdapter: PagingCatAdapter
+    private lateinit var viewModel: MainViewModel
+    private lateinit var mainListAdapter: PagingCatAdapter
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        PagingCatAdapter(){null}
+        PagingCatAdapter { null }
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-    //    val mFlipAnimator = ValueAnimator.ofFloat(0f, 1f)
-    //    FlipListener(R.layout.activity_main, R.layout.activity_cat_image)
-    //    mFlipAnimator.addUpdateListener()
-
-
         setupViewModel()
         setupList()
         setupView()
-
     }
-
 
     private fun setupView() {
         lifecycleScope.launch {
-            viewModel.flow.collect (adapter::submitData)
-
+            viewModel.flow.collect(adapter::submitData)
         }
     }
 
     private fun setupList() {
         val viewModel = MainViewModel(APIService.getApiService())
-        mainListAdapter = PagingCatAdapter()
-        {
+        mainListAdapter = PagingCatAdapter() {
             val i = Intent(this@MainActivity, CatImage::class.java)
-      //      Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            i.putExtra("url", it )
+
+            i.putExtra("url", it)
             startActivity(i)
-            overridePendingTransition(R.anim.grow_from_middle,R.anim.shrink_to_middle)
+            overridePendingTransition(R.anim.grow_from_middle, R.anim.shrink_to_middle)
         }
 
         val rv: RecyclerView = findViewById(R.id.rv_cat)
         rv.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            if (this.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                layoutManager = GridLayoutManager(context, 2)
+            }
+            if (this.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                layoutManager = GridLayoutManager(context, 4)
+            }
+
             setHasFixedSize(true)
             adapter = mainListAdapter
 
@@ -88,7 +75,6 @@ class MainActivity : AppCompatActivity() {
                 MainViewModelFactory(APIService.getApiService())
             )[MainViewModel::class.java]
     }
-
 
 /*
     fun FlipListener(front: View, back: View) {
@@ -123,6 +109,4 @@ class MainActivity : AppCompatActivity() {
         this.mBackView.setVisibility(if (flipped) View.VISIBLE else View.GONE)
     }
 }*/
-
-
 }

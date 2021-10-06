@@ -16,18 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TheCatAPI">
-        <activity android:name=".ActivitySwitcher"></activity>
         <activity android:name=".CatImage" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="package com.example.thecatapi.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/fileprovider" />
-        </provider>
+
 
         <activity android:name=".MainActivity">
             <intent-filter>

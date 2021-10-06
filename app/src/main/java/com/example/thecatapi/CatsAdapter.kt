@@ -7,27 +7,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.thecatapi.CatsAdapter.*
 import com.example.thecatapi.model.Cat
 
-class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
-    RecyclerView.Adapter <ViewHolder>() {
+class CatsAdapter(private val catContext: Context, private val cats: MutableList<Cat>) :
+    RecyclerView.Adapter <CatsAdapter.ViewHolder>() {
 
-  //  private val items = mutableListOf<Cat>()
-
-    lateinit var cListener: onClickCatListener
+    private lateinit var cListener: onClickCatListener
 
     interface onClickCatListener {
         fun onItemClick(position: Int)
     }
 
-    fun setOnClickDogListener (listener: onClickCatListener) {
-        cListener = listener
-    }
-
-    class ViewHolder (itemView: View, listener: onClickCatListener): RecyclerView.ViewHolder(itemView){
+    class ViewHolder(itemView: View, listener: onClickCatListener) : RecyclerView.ViewHolder(itemView) {
         var catImage: ImageView = itemView.findViewById(R.id.im_item_cat_image)
-    //    var catId: TextView = itemView.findViewById<TextView>(R.id.id_item)
+
         init {
             itemView.setOnClickListener {
                 listener.onItemClick(adapterPosition)
@@ -42,20 +35,16 @@ class CatsAdapter(val catContext: Context, private val cats: MutableList<Cat>):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cat: Cat = cats[position]
-     //   holder.catId.text = cat.id
 
         Glide.with(catContext).load(cat.url)
- //           .error(R.drawable.ic_baseline_block_24)
+            //           .error(R.drawable.ic_baseline_block_24)
             .centerCrop()
             .override(485, 420)
- //           .placeholder(R.drawable.ic_baseline_blur_circular_24)
+            //           .placeholder(R.drawable.ic_baseline_blur_circular_24)
             .into(holder.catImage)
-
     }
 
     override fun getItemCount(): Int {
         return cats.size
     }
-
-
 }

@@ -11,9 +11,8 @@ import com.example.thecatapi.data.PostDataSource
 class MainViewModel(private val apiService: APIService) : ViewModel() {
 
     val flow = Pager(
-        PagingConfig(pageSize = 10)) {
-        PostDataSource(apiService,"5")
+        PagingConfig(pageSize = 5)
+    ) {
+        PostDataSource(apiService, "5")
     }.flow.cachedIn(viewModelScope)
-
 }
-
