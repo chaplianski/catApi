@@ -1,20 +1,20 @@
 package com.example.thecatapi
 
+import android.animation.ValueAnimator
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.thecatapi.adapter.PagingCatAdapter
-import com.example.thecatapi.model.Cat
 import com.example.thecatapi.viewmodel.MainViewModel
 import com.example.thecatapi.viewmodel.MainViewModelFactory
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,34 +37,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-       // val adapter: CatsAdapter? = null
-/*
-        mApiService = RestClient.client.create(APIService::class.java)
+    //    val mFlipAnimator = ValueAnimator.ofFloat(0f, 1f)
+    //    FlipListener(R.layout.activity_main, R.layout.activity_cat_image)
+    //    mFlipAnimator.addUpdateListener()
 
-        mAdapter = CatsAdapter(this, cats)
-        val rv: RecyclerView = findViewById(R.id.rv_cat)
-        rv.layoutManager = GridLayoutManager(this, 2)
-        rv.adapter = mAdapter
-        catClickItems(cats, mAdapter!!)
-        fetchCatList() */
 
         setupViewModel()
         setupList()
         setupView()
-
-
-     /*   fun catClickItems(adapter: CatsAdapter) {
-            adapter.setOnClickDogListener(object : CatsAdapter.onClickCatListener{
-                override fun onItemClick(position: Int) {
-                    val i = Intent (this, CatImageActivity::class.java)
-                    i.putExtra("position", catsClickedList[position].id)
-
-                    startActivity(i)
-                }
-            })
-
-
-        }*/
 
     }
 
@@ -80,7 +60,11 @@ class MainActivity : AppCompatActivity() {
         val viewModel = MainViewModel(APIService.getApiService())
         mainListAdapter = PagingCatAdapter()
         {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            val i = Intent(this@MainActivity, CatImage::class.java)
+      //      Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            i.putExtra("url", it )
+            startActivity(i)
+            overridePendingTransition(R.anim.grow_from_middle,R.anim.shrink_to_middle)
         }
 
         val rv: RecyclerView = findViewById(R.id.rv_cat)
@@ -107,56 +91,38 @@ class MainActivity : AppCompatActivity() {
 
 
 /*
-
-    private fun fetchCatList(): List<Cat> {
-
-        val call = mApiService?.fetchCats()
-    //    var cats: List<Cat> = ArrayList()
-        call?.enqueue(object: retrofit2.Callback <List<Cat>> {
-
-           override fun onResponse (call: Call <List<Cat>>, response: Response <List<Cat>>) {
-                val catResponse = response.body()
-                Log.d("MyLog", "${response.body()}")
-
-                if (catResponse == null){
-                    mAdapter!!.notifyDataSetChanged()
-                }
-               if (catResponse != null) {
-                   cats.addAll(catResponse)
-                   Log.d("MyLog", "${cats}")
-                   mAdapter!!.notifyDataSetChanged()
-
-               }
-            }
-            override fun onFailure (call : Call<List<Cat>>, t: Throwable){
-
-                Log.d("MyLog", "Error: ${t.localizedMessage}")
-            }
-        })
-            return cats
+    fun FlipListener(front: View, back: View) {
+        this.mFrontView = front
+        this.mBackView = back
+        this.mBackView.setVisibility(View.GONE)
     }
 
-
-
-
-}
-
-  /*  private fun getCats() {
-
-        val adapter = CatsAdapter(this, catsList)
-        val catsService = GetCatsService()
-        catsService.cats {
-          catsList.map { result -> Cat (result.id, result.imageUrl) } as MutableList<Cat>
-            val rv: RecyclerView = findViewById(R.id.rv_cat)
-            rv.layoutManager = LinearLayoutManager(this)
-            rv.adapter = adapter
+    fun onAnimationUpdate(animation: ValueAnimator) {
+        val value = animation.animatedFraction
+        val scaleValue = 0.625f + 1.5f * (value - 0.5f) * (value - 0.5f)
+        if (value <= 0.5f) {
+            this.mFrontView.setRotationY(180 * value)
+            this.mFrontView.setScaleX(scaleValue)
+            this.mFrontView.setScaleY(scaleValue)
+            if (mFlipped) {
+                setStateFlipped(false)
             }
-        }*/
- //   }
+        } else {
+            this.mBackView.setRotationY(-180 * (1f - value))
+            this.mBackView.setScaleX(scaleValue)
+            this.mBackView.setScaleY(scaleValue)
+            if (!mFlipped) {
+                setStateFlipped(true)
+            }
+        }
+    }
 
-*/
-
-
+    private fun setStateFlipped(flipped: Boolean) {
+        mFlipped = flipped
+        this.mFrontView.setVisibility(if (flipped) View.GONE else View.VISIBLE)
+        this.mBackView.setVisibility(if (flipped) View.VISIBLE else View.GONE)
+    }
+}*/
 
 
 }
